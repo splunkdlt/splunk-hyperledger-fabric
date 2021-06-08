@@ -1,0 +1,80 @@
+<form theme="dark">
+  <label>stateDB Activity (CouchDB)</label>
+  <fieldset submitButton="false">
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="refresh_token" searchWhenChanged="true">
+      <label>Refresh Interval</label>
+      <choice value="3s">3 Seconds</choice>
+      <choice value="10s">10 Seconds</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1 Minute</choice>
+      <choice value="24h">None</choice>
+      <fieldForLabel>refresh_token</fieldForLabel>
+      <fieldForValue>refresh_token</fieldForValue>
+      <default>30s</default>
+      <initialValue>30s</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Aggregate</title>
+      <table>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) endorser OR couch* 
+| stats dc(couchdb_id) as Calls sparkline(dc(couchdb_id)) as CallFrequency count(eval(couchdb_channel_args="_ensure_full_commit")) as invokeUpdates values(couchdb_statuscode) as statuses values(couchdb_action) as actions by couchdb_host</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <set token="host">$click.value$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Events for $host$</title>
+      <table depends="$host$">
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) couch* 
+| table _time couchdb_id couchdb_ip couchdb_host couchdb_loglvl couchdb_action couchdb_channel couchdb_statuscode couchdb_channel_args couchdb_statuscode_id couchdb_statuscode_msg
+| sort - _time 
+| search couchdb_host="$host$"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="couchdb_statuscode">
+          <colorPalette type="map">{"200":#4FA484,"201":#4FA484,"404":#DC4E41}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>

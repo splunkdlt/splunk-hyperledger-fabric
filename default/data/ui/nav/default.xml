@@ -1,0 +1,18 @@
+<nav search_view="search">
+  <view name="search" />
+  <view name="analysis_workspace" />
+  <view name="reports" />
+  <view name="alerts" />
+  <collection label="Dashboards">
+    <view name="introduction" default='true' />
+    <view name="data_setup" />
+    <view name="network_architecture_and_channels" />
+    <view name="network_monitoring" />
+    <view name="transaction_analytics" />
+    <view name="k8s_monitoring" />
+    <view name="chaincode_events" />
+    <view name="statedb_activity_couchdb" />
+    <view name="security_monitoring" />
+    <view name="dashboards" />
+  </collection>
+</nav>

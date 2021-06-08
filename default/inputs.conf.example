@@ -1,0 +1,11 @@
+#Example inputs.conf for Hyperledger Fabric logs and metrics. To use simple mv this file to ../local/inputs.conf 
+
+[http://hyperledger_logs]
+disabled = 0
+index = hyperledger_logs
+token = 12345678-ABCD-EFGH-IJKL-123456789012
+
+[udp://8125]
+connection_host = ip
+index = hyperledger_metrics
+sourcetype = statsd

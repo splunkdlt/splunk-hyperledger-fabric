@@ -1,0 +1,12 @@
+# This is an example indexes.conf file for you to use for Hyperledger Fabric logs and metrics if you haven't already created one yourself.  To use simply copy these stanzas to your own indexes.conf file in ../local
+
+[hyperledger_metrics]
+coldPath = $SPLUNK_DB/hyperledger_metrics/colddb
+datatype = metric
+homePath = $SPLUNK_DB/hyperledger_metrics/db
+thawedPath = $SPLUNK_DB/hyperledger_metrics/thaweddb
+
+[hyperledger_logs]
+coldPath = $SPLUNK_DB/hyperledger_logs/colddb
+homePath = $SPLUNK_DB/hyperledger_logs/db
+thawedPath = $SPLUNK_DB/hyperledger_logs/thaweddb

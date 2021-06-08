@@ -1,0 +1,447 @@
+# Orderer Metrics
+
+[statsd-dims:orderer_st1]
+REGEX = (?<container>\S+)\.blockcutter\.block_fill_duration\.(?<channel>\S+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st2]
+REGEX = (?<container>\S+)\.broadcast.enqueue_duration\.(?<channel>[^\.]+)\.(?<type>[^\.]+)\.(?<status>[^\.]+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st3]
+REGEX = (?<container>\S+)\.broadcast.processed_count\.(?<channel>[^\.]+)\.(?<type>[^\.]+)\.(?<status>[^\.]+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st4]
+REGEX = (?<container>\S+)\.broadcast.validate_duration\.(?<channel>[^\.]+)\.(?<type>[^\.]+)\.(?<status>[^\.]+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st5]
+REGEX = (?<container>\S+)\.cluster.comm.egress_queue_capacity\.(?<hlf_host>[^\.]+)\.(?<msg_type>[^\.]+)\.(?<channel>[^\.]+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st6]
+REGEX = (?<container>\S+)\.cluster.comm.egress_queue_length\.(?<hlf_host>[^\.]+)\.(?<msg_type>[^\.]+)\.(?<channel>[^\.]+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st7]
+REGEX = (?<container>\S+)\.cluster.comm.egress_queue_workers\.(?<channel>\S+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st8]
+REGEX = (?<container>\S+)\.cluster.comm.egress_stream_count\.(?<channel>\S+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st9]
+REGEX = (?<container>\S+)\.cluster.comm.egress_tls_connection_count$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st10]
+REGEX = (?<container>\S+)\.cluster.comm.ingress_stream_count$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st11]
+REGEX = (?<container>\S+)\.cluster.comm.msg_dropped_count\.(?<hlf_host>[^\.]+)\.(?<channel>[^\.]+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st12]
+REGEX = (?<container>\S+)\.cluster.comm.msg_send_time\.(?<hlf_host>[^\.]+)\.(?<channel>[^\.]+)$
+REMOVE_DIMS_FROM_METRIC_NAME = true
+
+[statsd-dims:orderer_st13]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.cluster_size\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st14]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.committed_block_number\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st15]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.config_proposals_received\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st16]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.data_persist_duration\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st17]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.is_leader\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st18]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.leader_changes\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st19]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.normal_proposals_received\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st20]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.proposal_failures\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st21]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.etcdraft.snapshot_block_number\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st22]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.batch_size\.(?<topic>\S+)$
+
+[statsd-dims:orderer_st23]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.compression_ratio\.(?<topic>\S+)$
+
+[statsd-dims:orderer_st24]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.incoming_byte_rate\.(?<broker_id>\S+)$
+
+[statsd-dims:orderer_st25]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.last_offset_persisted\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st26]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.outgoing_byte_rate\.(?<broker_id>\S+)$
+
+[statsd-dims:orderer_st27]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.record_send_rate\.(?<topic>\S+)$
+
+[statsd-dims:orderer_st28]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.records_per_request\.(?<topic>\S+)$
+
+[statsd-dims:orderer_st29]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.request_latency\.(?<broker_id>\S+)$
+
+[statsd-dims:orderer_st30]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.request_rate\.(?<broker_id>\S+)$
+
+[statsd-dims:orderer_st31]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.request_size\.(?<broker_id>\S+)$
+
+[statsd-dims:orderer_st32]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.response_rate\.(?<broker_id>\S+)$
+
+[statsd-dims:orderer_st33]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.consensus.kafka.response_size\.(?<broker_id>\S+)$
+
+[statsd-dims:orderer_st34]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.blocks_sent\.(?<channel>[^\.]+)\.(?<filtered>[^\.]+)$
+
+[statsd-dims:orderer_st35]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.requests_completed\.(?<channel>[^\.]+)\.(?<filtered>[^\.]+)\.(?<success>[^\.]+)$
+
+[statsd-dims:orderer_st36]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.requests_received\.(?<channel>[^\.]+)\.(?<filtered>[^\.]+)$
+
+[statsd-dims:orderer_st37]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.streams_closed$
+
+[statsd-dims:orderer_st38]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.streams_opened$
+
+[statsd-dims:orderer_st39]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.fabric_version\.(?<version>\S+)$
+
+[statsd-dims:orderer_st40]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.comm.conn_closed$
+
+[statsd-dims:orderer_st41]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.comm.conn_opened$
+
+[statsd-dims:orderer_st42]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_messages_received\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:orderer_st43]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_messages_sent\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:orderer_st44]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_request_duration\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:orderer_st45]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_requests_completed\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:orderer_st46]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_requests_received\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:orderer_st47]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.unary_request_duration\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:orderer_st48]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.unary_requests_completed\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:orderer_st49]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.unary_requests_received\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:orderer_st50]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.blockchain_height\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st51]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.blockstorage_commit_time\.(?<channel>\S+)$
+
+[statsd-dims:orderer_st52]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.logging.entries_checked\.(?<level>\S+)$
+
+[statsd-dims:orderer_st53]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.logging.entries_written\.(?<level>\S+)$
+
+# Peer Metrics
+
+[statsd-dims:peer_st1]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.chaincode.execute_timeouts\.(?<chaincode>\S+)$
+
+[statsd-dims:peer_st2]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.chaincode.launch_duration\.(?<chaincode>[^\.]+)\.(?<success>[^\.]+)$
+
+[statsd-dims:peer_st3]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.chaincode.launch_failures\.(?<chaincode>\S+)$
+
+[statsd-dims:peer_st4]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.chaincode.launch_timeouts\.(?<chaincode>\S+)$
+
+[statsd-dims:peer_st5]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.chaincode.shim_request_duration\.(?<type>[^\.]+)\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)\.(?<success>[^\.]+)$
+
+[statsd-dims:peer_st6]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.chaincode.shim_requests_completed\.(?<type>[^\.]+)\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)\.(?<success>[^\.]+)$
+
+[statsd-dims:peer_st7]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.chaincode.shim_requests_received\.(?<type>[^\.]+)\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)$
+
+[statsd-dims:peer_st8]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.couchdb.processing_time\.(?<database>[^\.]+)\.(?<function_name>[^\.]+)\.(?<result>[^\.]+)$
+
+[statsd-dims:peer_st9]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.blocks_sent\.(?<channel>[^\.]+)\.(?<filtered>[^\.]+)$
+
+[statsd-dims:peer_st10]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.requests_completed\.(?<channel>[^\.]+)\.(?<filtered>[^\.]+)\.(?<success>[^\.]+)$
+
+[statsd-dims:peer_st11]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.requests_received\.(?<channel>[^\.]+)\.(?<filtered>[^\.]+)$
+
+[statsd-dims:peer_st12]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.streams_closed$
+
+[statsd-dims:peer_st13]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.deliver.streams_opened$
+
+[statsd-dims:peer_st14]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.dockercontroller.chaincode_container_build_duration\.(?<chaincode>[^\.]+)\.(?<success>[^\.]+)$
+
+[statsd-dims:peer_st15]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.chaincode_instantiation_failures\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)$
+
+[statsd-dims:peer_st16]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.duplicate_transaction_failures\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)$
+
+[statsd-dims:peer_st17]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.endorsement_failures\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)\.(?<chaincodeerror>[^\.]+)$
+
+[statsd-dims:peer_st18]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.proposal_acl_failures\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)$
+
+[statsd-dims:peer_st19]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.proposal_duration\.(?<channel>[^\.]+)\.(?<chaincode>[^\.]+)\.(?<success>[^\.]+)$
+
+[statsd-dims:peer_st20]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.proposal_validation_failures$
+
+[statsd-dims:peer_st21]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.proposals_received$
+
+[statsd-dims:peer_st22]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.endorser.successful_proposals$
+
+[statsd-dims:peer_st23]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.fabric_version\.(?<version>\S+)$
+
+[statsd-dims:peer_st24]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.comm.messages_received$
+
+[statsd-dims:peer_st25]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.comm.messages_sent$
+
+[statsd-dims:peer_st26]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.comm.overflow_count$
+
+[statsd-dims:peer_st27]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.leader_election.leader\.(?<channel>\S+)$
+
+[statsd-dims:peer_st28]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.membership.total_peers_known\.(?<channel>\S+)$
+
+[statsd-dims:peer_st29]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.payload_buffer.size\.(?<channel>\S+)$
+
+[statsd-dims:peer_st30]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.commit_block_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st31]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.fetch_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st32]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.list_missing_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st33]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.pull_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st34]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.purge_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st35]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.reconciliation_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st36]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.retrieve_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st37]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.send_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st38]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.privdata.validation_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st39]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.state.commit_duration\.(?<channel>\S+)$
+
+[statsd-dims:peer_st40]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.gossip.state.height\.(?<channel>\S+)$
+
+[statsd-dims:peer_st41]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.comm.conn_closed$
+
+[statsd-dims:peer_st42]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.comm.conn_opened$
+
+[statsd-dims:peer_st43]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_messages_received\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:peer_st44]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_messages_sent\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:peer_st45]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_request_duration\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:peer_st46]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_requests_completed\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:peer_st47]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.stream_requests_received\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:peer_st48]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.unary_request_duration\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:peer_st49]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.unary_requests_completed\.(?<service>[^\.]+)\.(?<method>[^\.]+)\.(?<code>[^\.]+)$
+
+[statsd-dims:peer_st50]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.grpc.server.unary_requests_received\.(?<service>[^\.]+)\.(?<method>[^\.]+)$
+
+[statsd-dims:peer_st51]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.block_processing_time\.(?<channel>\S+)$
+
+[statsd-dims:peer_st52]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.blockchain_height\.(?<channel>\S+)$
+
+[statsd-dims:peer_st53]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.blockstorage_and_pvtdata_commit_time\.(?<channel>\S+)$
+
+[statsd-dims:peer_st54]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.blockstorage_commit_time\.(?<channel>\S+)$
+
+[statsd-dims:peer_st55]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.statedb_commit_time\.(?<channel>\S+)$
+
+[statsd-dims:peer_st56]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.ledger.transaction_count\.(?<channel>[^\.]+)\.(?<transaction_type>[^\.]+)\.(?<chaincode>[^\.]+)\.(?<validation_code>[^\.]+)$
+
+[statsd-dims:peer_st57]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.logging.entries_checked\.(?<level>\S+)$
+
+[statsd-dims:peer_st58]
+REMOVE_DIMS_FROM_METRIC_NAME = true
+REGEX = (?<container>\S+)\.logging.entries_written\.(?<level>\S+)$

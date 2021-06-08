@@ -1,0 +1,522 @@
+<form theme="dark">
+  <label>K8s Monitoring</label>
+  <fieldset submitButton="false">
+    <input type="time" token="field1">
+      <label>Time Range</label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown">
+      <label>Time Span</label>
+      <choice value="auto">auto</choice>
+      <choice value="5s">5s</choice>
+      <choice value="10s">10s</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1m</choice>
+      <choice value="5m">5m</choice>
+      <choice value="10m">10m</choice>
+      <choice value="30m">30m</choice>
+      <choice value="1h">1h</choice>
+      <default>auto</default>
+      <change>
+        <eval token="timechart_span">if($value$ == "auto", "", "span=".$value$)</eval>
+        <eval token="mstats_span">"span=".$value$</eval>
+      </change>
+    </input>
+    <input type="dropdown" token="refresh_token" searchWhenChanged="true">
+      <label>Refresh Interval</label>
+      <choice value="5s">5 Seconds</choice>
+      <choice value="10s">10 Seconds</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1 Minute</choice>
+      <choice value="24h">None</choice>
+      <fieldForLabel>refresh_token</fieldForLabel>
+      <fieldForValue>refresh_token</fieldForValue>
+      <default>30s</default>
+      <initialValue>30s</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Cluster CPU Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE `k8s_metrics_index` AND metric_name="kube.cluster.cpu.usage" $mstats_span$
+| timechart avg(_value) as "Avg" $timechart_span$ 
+| eval "CPU (Cores)" = Avg/1000 
+| fields - Avg</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">175</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Cluster Memory Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE `k8s_metrics_index` AND metric_name="kube.cluster.memory.usage" $mstats_span$ 
+| timechart avg(_value) as "Avg" $timechart_span$ 
+| eval "Memory (GB)" = Avg/1000000000
+| fields - Avg</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">175</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <single>
+        <title>Nodes</title>
+        <search>
+          <query>`k8s_events_index` sourcetype="kube:objects:nodes" 
+    [ search `k8s_events_index` sourcetype="kube:objects:nodes" 
+    | dedup "metadata.requestResourceVersion" 
+    | head 1 
+    | table "metadata.requestResourceVersion" ] 
+| stats count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">100</option>
+        <option name="rangeColors">["0x006d9c","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[100,200,300]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <set token="show_nodes">true</set>
+          <unset token="show_namespaces"></unset>
+          <unset token="show_pods"></unset>
+          <unset token="show_containers"></unset>
+          <unset token="show_collection"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Namespaces</title>
+        <search>
+          <query>`k8s_events_index` sourcetype="kube:objects:namespaces" 
+    [ search `k8s_events_index` sourcetype="kube:objects:namespaces" 
+    | dedup "metadata.requestResourceVersion" 
+    | head 1 
+    | table "metadata.requestResourceVersion" ] 
+| stats count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">100</option>
+        <option name="rangeColors">["0x006d9c","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[100,200,300]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <set token="show_namespaces">true</set>
+          <unset token="show_nodes"></unset>
+          <unset token="show_pods"></unset>
+          <unset token="show_containers"></unset>
+          <unset token="show_collection"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Pods</title>
+        <search>
+          <query>`k8s_events_index` sourcetype="kube:objects:pods" 
+    [ search `k8s_events_index` sourcetype="kube:objects:pods" 
+    | dedup "metadata.requestResourceVersion" 
+    | head 1 
+    | table "metadata.requestResourceVersion" ] 
+| stats count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">100</option>
+        <option name="rangeColors">["0x006d9c","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[100,200,300]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <set token="show_pods">true</set>
+          <unset token="show_nodes"></unset>
+          <unset token="show_namespaces"></unset>
+          <unset token="show_containers"></unset>
+          <unset token="show_collection"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Containers</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.container.cpu.usage" AND `k8s_metrics_index` span=auto BY "container-name" 
+| stats avg(_value) as "Avg" BY "container-name" | stats count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">100</option>
+        <option name="rangeColors">["0x006d9c","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[100,200,300]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <set token="show_containers">true</set>
+          <unset token="show_pods"></unset>
+          <unset token="show_nodes"></unset>
+          <unset token="show_namespaces"></unset>
+          <unset token="show_collection"></unset>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_namespaces$">
+      <table>
+        <title>Namespace Details</title>
+        <search>
+          <query>`k8s_events_index` sourcetype="kube:objects:namespaces" 
+    [ search `k8s_events_index` sourcetype="kube:objects:namespaces" 
+    | dedup "metadata.requestResourceVersion" 
+    | head 1 
+    | table "metadata.requestResourceVersion" ] 
+| rename metadata.name as Name, status.phase as Status,metadata.creationTimestamp as CreationTime 
+| table Name,Status,CreationTime</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel depends="$show_namespaces$">
+      <chart>
+        <title>Namespace CPU Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.namespace.memory.usage" AND `k8s_metrics_index` $mstats_span$ BY "name" 
+| timechart avg(_value) as "Avg" agg=max limit=5 useother=false $timechart_span$ BY "name"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+         <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$show_namespaces$">
+      <chart>
+        <title>Namespace Memory Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.namespace.cpu.usage" AND `k8s_metrics_index` $mstats_span$ BY "name" 
+| timechart avg(_value) as "Avg" agg=max limit=5 useother=false $timechart_span$ BY "name"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+         <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_nodes$">
+      <table>
+        <title>Node Details</title>
+        <search>
+          <query>`k8s_events_index` sourcetype="kube:objects:nodes" 
+    [ search `k8s_events_index` sourcetype="kube:objects:nodes" 
+    | dedup "metadata.requestResourceVersion" 
+    | head 1 
+    | table "metadata.requestResourceVersion" ] 
+| rename metadata.name as Name,metadata.labels.kubernetes.io/role as Role, metadata.labels.failure-domain.beta.kubernetes.io/region as Region, metadata.labels.beta.kubernetes.io/instance-type as "Instance Type", metadata.labels.beta.kubernetes.io/os as OS, metadata.creationTimestamp as CreationTime 
+| table Name, Role, Region,"Instance Type", OS, CreationTime</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">none</option>
+      </table>
+    </panel>
+    <panel depends="$show_nodes$">
+      <chart>
+        <title>Node Filesystem Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE `k8s_metrics_index` AND metric_name="kube.node.filesystem.usage" $mstats_span$ BY "node" 
+| timechart avg(_value) as "Avg" agg=max limit=5 useother=false $timechart_span$ BY "node"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">bottom</option>
+         <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$show_nodes$">
+      <chart>
+        <title>Node Network Tx</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.node.network.tx_bytes" AND `k8s_metrics_index` $mstats_span$ BY "node" 
+| timechart avg(_value) as "network_tx" useother=false $timechart_span$ BY "node"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$show_nodes$">
+      <chart>
+        <title>Node CPU Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.node.cpu.usage_rate" AND `k8s_metrics_index` $mstats_span$ BY "node" 
+| timechart avg(_value) as "Avg" agg=max limit=5 useother=false $timechart_span$ BY "node"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">bottom</option>
+         <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$show_nodes$">
+      <chart>
+        <title>Node Memory Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.node.memory.usage" AND `k8s_metrics_index` $mstats_span$ BY "node" 
+| timechart avg(_value) as "Avg" agg=max limit=5 useother=false $timechart_span$ BY "node"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">bottom</option>
+         <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_pods$">
+      <table>
+        <title>Pod Details</title>
+        <search>
+          <query>`k8s_events_index` sourcetype="kube:objects:pods" 
+    [ search `k8s_events_index` sourcetype="kube:objects:pods" 
+    | dedup "metadata.requestResourceVersion" 
+    | head 1 
+    | table "metadata.requestResourceVersion" ] 
+| rename metadata.name as Name,status.phase as Status,metadata.namespace as Namespace,spec.nodeName as Node, status.containerStatuses{}.restartCount as Restart, status.containerStatuses{}.image as Image, metadata.creationTimestamp as CreationTime 
+| table Name, Status, Namespace, Node, Restart, Image, CreationTime</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="count">7</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">none</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+    <panel depends="$show_pods$">
+      <chart>
+        <title>Pod CPU Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.pod.cpu.usage" AND `k8s_metrics_index` $mstats_span$ BY "pod-name" 
+| timechart avg(_value) as "Avg" agg=max limit=20 useother=false $timechart_span$ BY "pod-name"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$show_pods$">
+      <chart>
+        <title>Pod Memory Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.pod.memory.usage_bytes" AND `k8s_metrics_index` $mstats_span$ BY "pod-name" 
+| timechart avg(_value) as "Avg" agg=max limit=20 useother=false $timechart_span$ BY "pod-name"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_containers$">
+      <chart>
+        <title>Container CPU Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.container.cpu.usage" AND `k8s_metrics_index` $mstats_span$ BY "container-name" 
+| timechart avg(_value) as "Avg" agg=max limit=0 useother=false $timechart_span$ BY "container-name"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">right</option>
+         <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$show_containers$">
+      <chart>
+        <title>Container Memory Usage</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.container.memory.usage_bytes" AND `k8s_metrics_index` $mstats_span$ BY "container-name" 
+| timechart avg(_value) as "Avg" agg=max limit=0 useother=false $timechart_span$ BY "container-name"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">right</option>
+         <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$show_containers$">
+      <chart>
+        <title>Container Uptime</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="kube.container.uptime" AND `k8s_metrics_index` $mstats_span$ BY "container-name" 
+| timechart avg(_value) as "Avg" agg=max limit=0 useother=false $timechart_span$ BY "container-name"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="height">350</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+  </row>
+</form>
