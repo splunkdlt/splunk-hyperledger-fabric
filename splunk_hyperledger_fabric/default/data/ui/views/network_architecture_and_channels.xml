@@ -1,4 +1,4 @@
-<form script="infobutton.js" stylesheet="infobutton.css" theme="dark">
+<form script="infobutton.js" stylesheet="infobutton.css" theme="dark" version="1.1">
   <label>Network Architecture and Channels</label>
   <fieldset submitButton="false">
     <input type="time" token="field1" searchWhenChanged="true">
