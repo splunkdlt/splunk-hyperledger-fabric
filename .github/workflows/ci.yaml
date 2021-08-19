@@ -1,0 +1,31 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: version
+        run: echo "::set-output name=version::$(cat splunk_hyperledger_fabric/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
+        id: version
+      - name: package
+        run: tar -cvzf splunk_hyperledger_fabric.tgz splunk_hyperledger_fabric
+      - name: app-inspect
+        uses: splunk/appinspect-api-action@v2
+        with:
+          filePath: ./splunk_hyperledger_fabric.tgz
+          splunkUser: ${{ secrets.SPLUNKBASE_USER }}
+          splunkPassword: ${{ secrets.SPLUNKBASE_PASSWORD }}
+          failOnError: true
+          failOnWarning: false
+          includedTags: cloud

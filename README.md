@@ -30,7 +30,7 @@ There are a few dashboards provided to get you started with analyzing your Hyper
 </div>
 
 ### Field Extractions and Aliases
-The app provides a number of field extractions and aliases that will make searching and investigating Hyperledger Fabric data easier. These include parsing couchdb logs for actions (GET, PUT, POST, etc) and documents, chaincode logs for channel and latency metadata, and field aliases for accessing various parts of ledger transactions. To see the full list you can look at the [props.conf](https://github.com/splunk/splunk-hyperledger-fabric/blob/master/default/props.conf) file or go to Settings > Fields in Splunk.
+The app provides a number of field extractions and aliases that will make searching and investigating Hyperledger Fabric data easier. These include parsing couchdb logs for actions (GET, PUT, POST, etc) and documents, chaincode logs for channel and latency metadata, and field aliases for accessing various parts of ledger transactions. To see the full list you can look at the [props.conf](https://github.com/splunkdlt/splunk_hyperledger_fabric/blob/main/default/props.conf) file or go to Settings > Fields in Splunk.
 
 # Getting Started
 
@@ -40,7 +40,7 @@ The app provides a number of field extractions and aliases that will make search
     * **Hyperledger Fabric Ledger Logs** - The [Splunk Connect for Hyperledger Fabric](https://github.com/splunk/fabric-logger) is an open source agent that connects to a peer on the Hyperledger Fabric network. See the README on Github here for deployment instructions. Docker, Kubernetes, and native deployments are all options.
     * **Hyperledger Fabric Application Logs** - There are several options to get data in from you Hyperledger Fabric environment depending on where and how the nodes are hosted.  You will need to [create an index](https://docs.splunk.com/Documentation/Splunk/latest/Indexer/Setupmultipleindexes) in Splunk as well as an input mechanism to receive the data.  We usually like to create an index called “*hyperledger_logs*” and “*hyperledger_metrics*” and enable the Splunk HEC to receive data.  You can use the example “indexes.conf.example” provided in the app.  Simply rename the file from “indexes.conf.example” to “indexes.conf” to enable the indexes, and rename “inputs.conf.example” to “inputs.conf” to enable the HEC endpoints. You will also need to [enable the HTTP Event Collector (HEC)](https://docs.splunk.com/Documentation/Splunk/7.3.0/Data/UsetheHTTPEventCollector#Configure_HTTP_Event_Collector_on_Splunk_Enterprise) to receive data if it has not been "enabled" already.  
     ```
-    $ cd $SPLUNK_HOME/etc/apps/splunk-hyperledger-fabric/default
+    $ cd $SPLUNK_HOME/etc/apps/splunk_hyperledger_fabric/default
     $ sudo mv inputs.conf.example inputs.conf
     $ sudo mv indexes.conf.example indexes.conf
     $ cd /opt/splunk/bin

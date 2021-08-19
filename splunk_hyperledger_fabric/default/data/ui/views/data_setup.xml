@@ -1,4 +1,4 @@
-<dashboard theme="dark">
+<dashboard theme="dark" version="1.1">
   <label>Data Setup</label>
   <row>
     <panel>
@@ -53,7 +53,7 @@
         <center>
           <p>
             <h2>Edit this <strong>
-                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_application_logs?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_application_logs" target="_blank">Macro</a>
+                <a href="/manager/splunk_hyperledger_fabric/admin/macros/hlf_application_logs?action=edit&amp;ns=splunk_hyperledger_fabric&amp;f_ns=splunk_hyperledger_fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_hyperledger_fabric%2Fadmin%2Fmacros%2Fhlf_application_logs" target="_blank">Macro</a>
               </strong> with your index and sourcetype.</h2>
           </p>
         </center>
@@ -101,7 +101,7 @@
        <center>
           <p>
             <h2>Edit this <strong>
-                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_ledger_logs?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_ledger_logs" target="_blank">Macro</a>
+                <a href="/manager/splunk_hyperledger_fabric/admin/macros/hlf_ledger_logs?action=edit&amp;ns=splunk_hyperledger_fabric&amp;f_ns=splunk_hyperledger_fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_hyperledger_fabric%2Fadmin%2Fmacros%2Fhlf_ledger_logs" target="_blank">Macro</a>
               </strong> with your index and sourcetype.</h2>
           </p>
         </center>
@@ -161,19 +161,19 @@
         <center>
           <p>
             <h2>If your Prometheus metrics' have a common prefix, set that with this<strong>
-                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics_prefix?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_prefix" target="_blank">Macro</a>
+                <a href="/manager/splunk_hyperledger_fabric/admin/macros/hlf_prometheus_metrics_prefix?action=edit&amp;ns=splunk_hyperledger_fabric&amp;f_ns=splunk_hyperledger_fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_hyperledger_fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_prefix" target="_blank">Macro</a>
               </strong>
             </h2>
             <h2>Edit this <strong>
-              <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics_index?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_index" target="_blank">Macro</a>
+              <a href="/manager/splunk_hyperledger_fabric/admin/macros/hlf_prometheus_metrics_index?action=edit&amp;ns=splunk_hyperledger_fabric&amp;f_ns=splunk_hyperledger_fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_hyperledger_fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_index" target="_blank">Macro</a>
             </strong> with your index.
             </h2>
             <h2>Edit this <strong>
-              <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics" target="_blank">Macro</a>
+              <a href="/manager/splunk_hyperledger_fabric/admin/macros/hlf_prometheus_metrics?action=edit&amp;ns=splunk_hyperledger_fabric&amp;f_ns=splunk_hyperledger_fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_hyperledger_fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics" target="_blank">Macro</a>
             </strong> with your index and sourcetype.
             </h2>
             <h2>If using fabric-logger's Prometheus scraper, you will want to split metrics by "host" (default) in our example queries. If scraping from an existing Prometheus environment, you may want to update this <strong>
-                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics_split?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_split" target="_blank">Macro</a>
+                <a href="/manager/splunk_hyperledger_fabric/admin/macros/hlf_prometheus_metrics_split?action=edit&amp;ns=splunk_hyperledger_fabric&amp;f_ns=splunk_hyperledger_fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_hyperledger_fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_split" target="_blank">Macro</a>
             </strong> to split by "instance" or "exported_instance".</h2>
           </p>
         </center>
@@ -234,7 +234,7 @@
       <center>
           <p>
             <h2>Edit this <strong>
-                <a href="/manager/splunk-hyperledger-fabric/admin/macros/" target="_blank">Macros</a>
+                <a href="/manager/splunk_hyperledger_fabric/admin/macros/" target="_blank">Macros</a>
               </strong> with your index and sourcetype.</h2>
           </p>
         </center>
@@ -279,7 +279,7 @@
         <center>
           <p>
             <h2>Edit your <strong>
-                <a href="/manager/splunk-hyperledger-fabric/saved/ntags" target="_blank">Tags</a>
+                <a href="/manager/splunk_hyperledger_fabric/saved/ntags" target="_blank">Tags</a>
               </strong> here.</h2>
           </p>
         </center>
@@ -288,7 +288,7 @@
     <panel>
       <table>
         <search>
-          <query>| rest /servicesNS/admin/splunk-hyperledger-fabric/search/fields/container_id/tags 
+          <query>| rest /servicesNS/admin/splunk_hyperledger_fabric/search/fields/container_id/tags
 | fields title id | rename title as tag</query>
           <earliest>-60m@m</earliest>
           <latest>now</latest>

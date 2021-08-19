@@ -1,4 +1,4 @@
-<form theme="dark" script="infobutton.js" stylesheet="infobutton.css">
+<form theme="dark" script="infobutton.js" stylesheet="infobutton.css" version="1.1">
   <label>Infrastructure Health and Monitoring</label>
   <fieldset submitButton="false">
     <input type="time" token="field1" searchWhenChanged="true">
@@ -26,7 +26,7 @@
       <html>
         <center>
           <h1>System Metrics (cAdvisor)</h1>
-          <h3>If you are using Kubernetes you can use this <a href="/app/splunk-hyperledger-fabric/k8s_monitoring" target="_blank">dashboard.</a>
+          <h3>If you are using Kubernetes you can use this <a href="/app/splunk_hyperledger_fabric/k8s_monitoring" target="_blank">dashboard.</a>
           </h3> 
         </center>
         </html>
@@ -380,7 +380,7 @@ span=10s
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
         <drilldown>
-          <link target="_blank">/app/splunk-hyperledger-fabric/transaction_analytics</link>
+          <link target="_blank">/app/splunk_hyperledger_fabric/transaction_analytics</link>
         </drilldown>
       </single>
     </panel>
