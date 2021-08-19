@@ -287,7 +287,7 @@
       <title>Orphaned Blocks (Drilldown)</title>
       <single>
         <search>
-          <query>sourcetype="fabric_logger:blockIntegrity" 
+          <query>sourcetype="fabric_logger:block_integrity"
 | stats dc(block_hash) as distinct_hashes by channel, block_number
 | where distinct_hashes &gt; 1
 | stats count</query>
@@ -400,7 +400,7 @@ span=1s
       <title>Observed Orphaned Blocks</title>
       <table>
         <search>
-          <query>sourcetype="fabric_logger:blockIntegrity" 
+          <query>sourcetype="fabric_logger:block_integrity"
 | stats dc(block_hash) as distinct_hashes by channel, block_number
 | where distinct_hashes &gt; 1
 | rename channel as Channel, block_number as "Block Number", distinct_hashes as "Distinct Hashes"</query>
