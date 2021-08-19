@@ -16,14 +16,14 @@ jobs:
         with:
           fetch-depth: 0
       - name: version
-        run: echo "::set-output name=version::$(cat splunk-hyperledger-fabric/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
+        run: echo "::set-output name=version::$(cat splunk_hyperledger_fabric/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
         id: version
       - name: package
-        run: tar -cvzf splunk-hyperledger-fabric.tgz splunk-hyperledger-fabric
+        run: tar -cvzf splunk_hyperledger_fabric.tgz splunk_hyperledger_fabric
       - name: app-inspect
         uses: splunk/appinspect-api-action@v2
         with:
-          filePath: ./splunk-hyperledger-fabric.tgz
+          filePath: ./splunk_hyperledger_fabric.tgz
           splunkUser: ${{ secrets.SPLUNKBASE_USER }}
           splunkPassword: ${{ secrets.SPLUNKBASE_PASSWORD }}
           failOnError: true

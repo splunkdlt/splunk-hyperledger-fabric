@@ -15,12 +15,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: version
-        run: echo "::set-output name=version::$(cat splunk-hyperledger-fabric/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
+        run: echo "::set-output name=version::$(cat splunk_hyperledger_fabric/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
         id: version
       - name: copy readme
-        run: cp README.md splunk-hyperledger-fabric/README.md
+        run: cp README.md splunk_hyperledger_fabric/README.md
       - name: package
-        run: tar -cvzf splunk-hyperledger-fabric.tgz splunk-hyperledger-fabric
+        run: tar -cvzf splunk_hyperledger_fabric.tgz splunk_hyperledger_fabric
       - name: release
         uses: actions/create-release@v1
         id: create_release
@@ -37,6 +37,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./splunk-hyperledger-fabric.tgz
-          asset_name: splunk-hyperledger-fabric-v${{ steps.version.outputs.version }}.tgz
+          asset_path: ./splunk_hyperledger_fabric.tgz
+          asset_name: splunk_hyperledger_fabric-v${{ steps.version.outputs.version }}.tgz
           asset_content_type: application/gzip
