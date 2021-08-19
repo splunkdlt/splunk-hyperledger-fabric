@@ -21,12 +21,12 @@ There are a few dashboards provided to get you started with analyzing your Hyper
   * **Transaction Analytics** - Real time visibility into the transactions being written on each ledger. In this dashboard, we’re blending ledger data sent from the peers with logs and metrics to give a holistic view of the network’s health.
   * **Security Monitoring** - High level visibility into key threat indicators to facilitate detection of attacks on the network. This dashboard is informed by ledger, log and metric data.
 <div style="display: inline-block;">
-<img src="/appserver/static/architecture.png?raw=true" alt="Network Architecture and Channels" width="33%"/>
-<img src="/appserver/static/monitoring.png?raw=true" alt="Infrastructure Health and Monitoring" width="33%"/>
+<img src="/splunk_hyperledger_fabric/appserver/static/architecture.png?raw=true" alt="Network Architecture and Channels" width="33%"/>
+<img src="/splunk_hyperledger_fabric/appserver/static/monitoring.png?raw=true" alt="Infrastructure Health and Monitoring" width="33%"/>
 </div>
 <div style="display: inline-block;">
-<img src="/appserver/static/transaction_analytics.png?raw=true" alt="Transaction Analytics" width="33%"/>
-<img src="/appserver/static/security.png?raw=true" alt="Security Monitoring" width="33%"/>
+<img src="/splunk_hyperledger_fabric/appserver/static/transaction_analytics.png?raw=true" alt="Transaction Analytics" width="33%"/>
+<img src="/splunk_hyperledger_fabric/appserver/static/security.png?raw=true" alt="Security Monitoring" width="33%"/>
 </div>
 
 ### Field Extractions and Aliases
