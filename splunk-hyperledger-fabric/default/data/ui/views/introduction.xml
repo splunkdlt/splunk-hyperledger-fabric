@@ -4,7 +4,7 @@
     <panel>
       <html>
         <center>
-          <img src="/static/app/splunk_hyperledger_fabric/fabric_logo.png" width="50%"/>
+          <img src="/static/app/splunk-hyperledger-fabric/fabric_logo.png" width="50%"/>
         </center>
       </html>
     </panel>
@@ -19,7 +19,7 @@
             <h2>Below you are some useful links and example dashboards to get started with.  On the Dashboards keep a look out for and click on the "i" symbols for additional information about each chart. Please send us your feedback to blockchain@splunk.com.</h2>
           </p>
           <p>
-            <h2>In order for these dashboards to work please make sure your data sources are configured correctly by using the <strong><a href="/app/splunk_hyperledger_fabric/data_setup" target="_blank">Data Setup</a></strong> dashboard.</h2>
+            <h2>In order for these dashboards to work please make sure your data sources are configured correctly by using the <strong><a href="/app/splunk-hyperledger-fabric/data_setup" target="_blank">Data Setup</a></strong> dashboard.</h2>
           </p>
         </center>
       </html>
@@ -30,11 +30,11 @@
       <html>
         <center>
           <h1>
-            <a href="/app/splunk_hyperledger_fabric/network_architecture_and_channels" target="_blank">Network Architecture and Channels</a>
+            <a href="/app/splunk-hyperledger-fabric/network_architecture_and_channels" target="_blank">Network Architecture and Channels</a>
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk_hyperledger_fabric/architecture.png"/>
+          <img src="/static/app/splunk-hyperledger-fabric/architecture.png"/>
         </center>
       </html>
     </panel>
@@ -42,11 +42,11 @@
       <html>
         <center>
           <h1>
-            <a href="/app/splunk_hyperledger_fabric/network_monitoring" target="_blank">Infrastructure Health and Monitoring</a>
+            <a href="/app/splunk-hyperledger-fabric/network_monitoring" target="_blank">Infrastructure Health and Monitoring</a>
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk_hyperledger_fabric/monitoring.png"/>
+          <img src="/static/app/splunk-hyperledger-fabric/monitoring.png"/>
         </center>
       </html>
     </panel>
@@ -54,11 +54,11 @@
       <html>
         <center>
           <h1>
-            <a href="/app/splunk_hyperledger_fabric/transaction_analytics" target="_blank">Transaction Analytics</a>
+            <a href="/app/splunk-hyperledger-fabric/transaction_analytics" target="_blank">Transaction Analytics</a>
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk_hyperledger_fabric/transaction_analytics.png"/>
+          <img src="/static/app/splunk-hyperledger-fabric/transaction_analytics.png"/>
         </center>
       </html>
     </panel>
@@ -68,11 +68,11 @@
       <html>
         <center>
           <h1>
-            <a href="/app/splunk_hyperledger_fabric/security_monitoring" target="_blank">Security Monitoring</a>
+            <a href="/app/splunk-hyperledger-fabric/security_monitoring" target="_blank">Security Monitoring</a>
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk_hyperledger_fabric/security.png"/>
+          <img src="/static/app/splunk-hyperledger-fabric/security.png"/>
         </center>
       </html>
     </panel>
@@ -80,11 +80,11 @@
       <html>
         <center>
           <h1>
-            <a href="/app/splunk_hyperledger_fabric/search?earliest=-60m%40m&amp;latest=now&amp;q=search%20index%3Dhyperledger_logs" target="_blank">Event Search</a>
+            <a href="/app/splunk-hyperledger-fabric/search?earliest=-60m%40m&amp;latest=now&amp;q=search%20index%3Dhyperledger_logs" target="_blank">Event Search</a>
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk_hyperledger_fabric/search.png"/>
+          <img src="/static/app/splunk-hyperledger-fabric/search.png"/>
         </center>
       </html>
     </panel>
@@ -96,7 +96,7 @@
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk_hyperledger_fabric/metrics.png"/>
+          <img src="/static/app/splunk-hyperledger-fabric/metrics.png"/>
         </center>
       </html>
     </panel>
