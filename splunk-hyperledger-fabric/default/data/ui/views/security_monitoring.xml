@@ -63,7 +63,7 @@
         <option name="unit">ms</option>
         <option name="useColors">1</option>
         <drilldown>
-          <link target="_blank">/app/splunk_hyperledger_fabric/network_monitoring</link>
+          <link target="_blank">/app/splunk-hyperledger-fabric/network_monitoring</link>
         </drilldown>
       </single>
     </panel>
@@ -101,7 +101,7 @@
         <option name="useColors">1</option>
         <option name="useThousandSeparators">1</option>
         <drilldown>
-          <link target="_blank">/app/splunk_hyperledger_fabric/transaction_analytics</link>
+          <link target="_blank">/app/splunk-hyperledger-fabric/transaction_analytics</link>
         </drilldown>
       </single>
     </panel>
