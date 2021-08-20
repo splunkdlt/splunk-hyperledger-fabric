@@ -157,7 +157,7 @@
   PROMETHEUS_DISCOVERY=true
   PROMETHEUS_PEER_PORT=[PEER_PORT]
   PROMETHEUS_ORDERER_PORT=[ORDERER_PORT]</pre>
-             <p> Alternatively, the  <a target="_blank" href="https://github.com/splunkdlt/dlt-connect-libs/tree/master/docker/prometheus-scraper-standalone">Splunk Opentelemetry Connector</a> or <a target="_blank" href="https://github.com/splunkdlt/dlt-connect-libs/tree/master/docker/prometheus-scraper-standalone">standalone Prometheus scraper</a> can be configured to scrape these metrics from an existing Prometheus environment.</p>
+             <p> Alternatively, the  <a target="_blank" href="https://github.com/splunkdlt/dlt-connect-libs/tree/main/docker/prometheus-scraper-standalone">Splunk Opentelemetry Connector</a> or <a target="_blank" href="https://github.com/splunkdlt/dlt-connect-libs/tree/master/docker/prometheus-scraper-standalone">standalone Prometheus scraper</a> can be configured to scrape these metrics from an existing Prometheus environment.</p>
         <center>
           <p>
             <h2>If your Prometheus metrics' have a common prefix, set that with this<strong>
