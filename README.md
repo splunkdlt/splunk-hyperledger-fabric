@@ -74,3 +74,19 @@ The app provides a number of field extractions and aliases that will make search
    * **System Logs/Metrics** - Depending on how you’ve deployed your Hyperledger Fabric network, there is probably a great option to get your System Logs and Metrics for end-to-end visibility. On the data setup dashboard, we’ve provided a list of common options that you can use to get your data into Splunk. 
    
 *You are now ready to use the Splunk App for Hyperledger Fabric!*
+
+# License
+
+Copyright 2021 Splunk Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
