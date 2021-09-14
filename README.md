@@ -21,12 +21,12 @@ There are a few dashboards provided to get you started with analyzing your Hyper
   * **Transaction Analytics** - Real time visibility into the transactions being written on each ledger. In this dashboard, we’re blending ledger data sent from the peers with logs and metrics to give a holistic view of the network’s health.
   * **Security Monitoring** - High level visibility into key threat indicators to facilitate detection of attacks on the network. This dashboard is informed by ledger, log and metric data.
 <div style="display: inline-block;">
-<img src="/splunk-hyperledger-fabric/appserver/static/architecture.png?raw=true" alt="Network Architecture and Channels" width="33%"/>
-<img src="/splunk-hyperledger-fabric/appserver/static/monitoring.png?raw=true" alt="Infrastructure Health and Monitoring" width="33%"/>
+<img src="https://www.splunkdlt.com/static/1ce2521db5e07f8ed577f59c3bdc3e35/d9ed5/architecture.png" alt="Network Architecture and Channels" width="33%"/>
+<img src="https://www.splunkdlt.com/static/8f9710261aef067e56f85f381b34eeb7/d9ed5/monitoring.png" alt="Infrastructure Health and Monitoring" width="33%"/>
 </div>
 <div style="display: inline-block;">
-<img src="/splunk-hyperledger-fabric/appserver/static/transaction_analytics.png?raw=true" alt="Transaction Analytics" width="33%"/>
-<img src="/splunk-hyperledger-fabric/appserver/static/security.png?raw=true" alt="Security Monitoring" width="33%"/>
+<img src="https://www.splunkdlt.com/static/44df91010cf2f52586511091ceca3771/e3189/transaction_analytics.png" alt="Transaction Analytics" width="33%"/>
+<img src="https://www.splunkdlt.com/static/ad7c64273bd0a665ab1804d98bb76cdd/e3189/security.png" alt="Security Monitoring" width="33%"/>
 </div>
 
 ### Field Extractions and Aliases

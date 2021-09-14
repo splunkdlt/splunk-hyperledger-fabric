@@ -34,7 +34,7 @@
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk-hyperledger-fabric/architecture.png"/>
+          <img src="https://www.splunkdlt.com/static/1ce2521db5e07f8ed577f59c3bdc3e35/d9ed5/architecture.png"/>
         </center>
       </html>
     </panel>
@@ -46,7 +46,7 @@
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk-hyperledger-fabric/monitoring.png"/>
+          <img src="https://www.splunkdlt.com/static/8f9710261aef067e56f85f381b34eeb7/d9ed5/monitoring.png"/>
         </center>
       </html>
     </panel>
@@ -58,7 +58,7 @@
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk-hyperledger-fabric/transaction_analytics.png"/>
+          <img src="https://www.splunkdlt.com/static/44df91010cf2f52586511091ceca3771/e3189/transaction_analytics.png"/>
         </center>
       </html>
     </panel>
@@ -72,7 +72,7 @@
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk-hyperledger-fabric/security.png"/>
+          <img src="https://www.splunkdlt.com/static/ad7c64273bd0a665ab1804d98bb76cdd/e3189/security.png"/>
         </center>
       </html>
     </panel>
@@ -84,7 +84,7 @@
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk-hyperledger-fabric/search.png"/>
+          <img src="https://www.splunkdlt.com/static/41e73a6568efa88f8bf0159737859251/d9ed5/search.png"/>
         </center>
       </html>
     </panel>
@@ -96,7 +96,7 @@
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk-hyperledger-fabric/metrics.png"/>
+          <img src="https://www.splunkdlt.com/static/02d16cb1ca923ebedf619c90ce9d6400/e3189/metrics.png"/>
         </center>
       </html>
     </panel>
