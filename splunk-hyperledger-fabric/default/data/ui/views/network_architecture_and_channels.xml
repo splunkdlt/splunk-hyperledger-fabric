@@ -1,0 +1,482 @@
+<form script="infobutton.js" stylesheet="infobutton.css" theme="dark" version="1.1">
+  <label>Network Architecture and Channels</label>
+  <fieldset submitButton="false">
+    <input type="time" token="field1" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="refresh_token" searchWhenChanged="true">
+      <label>Refresh Interval</label>
+      <choice value="3s">3 Seconds</choice>
+      <choice value="10s">10 Seconds</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1 Minute</choice>
+      <choice value="24h">None</choice>
+      <fieldForLabel>refresh_token</fieldForLabel>
+      <fieldForValue>refresh_token</fieldForValue>
+      <default>30s</default>
+      <initialValue>30s</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title># of Hyperledger Fabric Hosts</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) NOT host="splunk.example.com:8088" | stats dc(host) as count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">85</option>
+        <option name="rangeColors">["0x006d9c","0xdc4e41"]</option>
+        <option name="rangeValues">[50]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title># of Docker Containers</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`)
+| stats dc(container_id) as containers</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">85</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[50]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel id="peer_anchors">
+      <title>Anchor Peers</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) tag=anchor_peers | stats dc(container_id)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">60</option>
+        <option name="refresh.display">none</option>
+      </single>
+      <html>
+        <div class="infobutton" parent="peer_anchors" type="collapse">
+          <p>AN ANCHOR PEER IS SPECIFIC TO AN ORGANIZATION TAKING PART IN THE CHANNEL AND ITS MAIN ROLE IS PEER DISCOVERY.</p>
+          <p>It’s a peer node on a channel that all other peers can discover and communicate with. Therefore, every participating organization in a channel has an anchor peer. Peers belonging to an organization can query this peer to discover all peers belonging to other organizations in the channel. An org can have multiple anchor peers to prevent a single point of failure.
+          </p>
+        </div>
+      </html>
+    </panel>
+    <panel id="peer_leaders">
+      <title>Leader Peers</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) tag=leader_peers | stats dc(container_id)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">60</option>
+        <option name="refresh.display">none</option>
+      </single>
+      <html>
+        <div class="infobutton" parent="peer_leaders" type="collapse">
+          <p>A LEADER PEER IS RESPONSIBLE FOR GOSSIP DATA DISSEMINATION.</p>
+          <p>When an ordering service node must send a block to the peers in the channel, it sends the block to each of the leading peer associated with the organizations. The leading peer in turn distributes this block to other peers belonging to the same organization. Distribution is done using gossip protocol.
+          </p>
+        </div>
+      </html>
+    </panel>
+    <panel id="peer_others">
+      <title>CouchDB Instances</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) tag=couchdb | stats dc(container_id)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">60</option>
+        <option name="refresh.display">none</option>
+      </single>
+      <html>
+        <div class="infobutton" parent="peer_others" type="collapse">
+          <p>A network entity that maintains a ledger and runs chaincode containers in order to perform read/write operations to the ledger. Peers are owned and maintained by members.</p>
+          
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="orderer">
+      <title>Orderers</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) tag=orderers 
+| stats dc(container_id)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">all</option>
+        <option name="height">60</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051", "0x0877a6", "0xf8be34", "0xf1813f", "0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <set token="order">true</set>
+        </drilldown>
+      </single>
+      <html>
+        <div class="infobutton" parent="orderer" type="collapse">
+          <p>Orderer peer is considered as the central communication channel for the Hyperledger Fabric network. Orderer peer/node is responsible for consistent Ledger state accross the network. Orderer peer creates the block and delivers that to all the peers.</p>
+          <p>Orderer is built on top of a message oriented architecture. Production ready Hyperledger Fabric network uses Kafka as the Orderer implementation. Kafka is a messaging software that has high throughput fault tolerant feature.
+          </p>
+        </div>
+      </html>
+    </panel>
+    <!-- <panel id="zookeepers">
+      <title>Zookeepers</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) tag=zookeeper | stats dc(container_id)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">60</option>
+        <option name="refresh.display">none</option>
+      </single>
+      <html>
+        <div class="infobutton" parent="zookeepers" type="collapse">
+          <p>Zookeeper is a distributed key-value store, most commonly used to store metadata and handle the mechanics of clustering. It allows clients of the service (the Kafka brokers) to subscribe and have changes sent to them once they happen. This is how brokers know when to switch partition leaders. Zookeeper is also extremely fault-tolerant as it ought to be, since Kafka heavily depends on it.
+          </p>
+        </div>
+      </html>
+    </panel>
+    <panel id="kafka">
+      <title>Kafka Nodes</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) tag=kafka_cluster | stats dc(container_id)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">60</option>
+        <option name="refresh.display">none</option>
+      </single>
+      <html>
+        <div class="infobutton" parent="kafka" type="collapse">
+          <p>Kafka is primarily a distributed, horizontally-scalable, fault-tolerant, commit log. A commit log is basically a data structure that only appends. No modification or deletion is possible, which leads to no read/write locks, and the worst case complexity O(1). There can be multiple Kafka nodes in the blockchain network, with their corresponding Zookeeper ensemble.
+          </p>
+          <p>Kafka is a great thing to happen to the Hyperledger Fabric, due to its high performance. Multiple orderers use Kafka for being in sync, Kafka isn’t an orderer in itself. It just connects two orderers with a stream. Even though it supports crash tolerance, it does not offer protection against malicious nodes in the network.
+          </p>
+        </div>
+      </html>
+    </panel> -->
+
+    <panel id="cas">
+      <title>Certificate Authorities</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) tag=ca | stats dc(container_id)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">60</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051", "0x0877a6", "0xf8be34", "0xf1813f", "0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+      <html>
+        <div class="infobutton" parent="cas" type="collapse">
+          <p>TBD</p>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="log_activity">
+      <title>Log Activity by Container Timeline</title>
+      <chart>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`)
+| timechart usenull=f fixedrange=f count by container_id</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+      <html>
+        <div class="infobutton" parent="log_activity" type="collapse">
+          <p>This chart shows the number of logs coming in by each container.  Even something as simple as the "count" of logs can be a useful troubleshooting tool.</p>
+          
+        </div>
+      </html>
+    </panel>
+    <panel id="logs_metrics">
+      <title>Log/Metrics Rate</title>
+      <chart>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`)
+| timechart count by sourcetype 
+| eval ledger_data='fabric_logger:endorser_transaction'+'fabric_logger:block'
+| rename httpevent AS hfl_logs 
+| appendcols 
+    [| mstats count prestats=true WHERE `hlf_prometheus_metrics` span=1s 
+    | timechart count as hlf_prometheus ] 
+| appendcols 
+    [| mstats count prestats=true WHERE (`cadvisor_metrics`) OR (`system_metrics`) OR (`k8s_metrics_index`) span=1s 
+    | timechart count as container_metrics ] 
+| eval container_metrics=container_metrics/5 
+| fields - 'fabric_logger:block','fabric_logger:endorser_transaction'</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">233</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+      <html>
+        <div class="infobutton" parent="logs_metrics" type="collapse">
+          <p>This chart shows the OVERALL number of logs and metrics streaming into Splunk.</p>
+        </div>
+      </html>
+    </panel>
+    <panel id="log_activity_total">
+      <title>LogActivity by Container Total</title>
+      <chart>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`)
+| stats count by container_id</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">224</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+      <html>
+        <div class="infobutton" parent="log_activity_total" type="collapse">
+          <p>This chart is similar to the other log activity by container chart except that it shows the current sum totals instead of over time.</p>
+        </div>
+        </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="channels">
+      <title>Channels</title>
+      <table>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) kvledger 
+| stats values(container_id) as Peers_Used sparkline(count) as Activity max(block_number) as Block_Height by channel 
+| rename channel as Channel</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="Block_Height">
+          <colorPalette type="minMidMax" maxColor="#294E70" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format field="Activity" type="sparkline">
+          <option name="type">bar</option>
+          <option name="height">60</option>
+          <option name="barColor">#5379AF</option>
+          <option name="barWidth">5</option>
+        </format>
+      </table>
+      <html>
+        <div class="infobutton" parent="channels" type="collapse">
+          <p>This table shows the current channels that exist in this Hyperledger Fabric environment.  It also shows the current block height and log activity by channel.  These are just some high level statistics to help provide an overview of this particular environment.</p>
+        </div>
+        </html>
+    </panel>
+  </row>
+</form>

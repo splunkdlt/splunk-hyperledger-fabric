@@ -1,0 +1,104 @@
+<dashboard version="1.1">
+  <label>Introduction</label>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <img src="/static/app/splunk-hyperledger-fabric/fabric_logo.png" width="50%"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+       <center>
+          <br/>
+          <p>
+            <h2>Welcome to the Splunk App for Hyperledger! This is an early preview of what's to come when you combine the power of Splunk with Hyperledger!  For now there are a few examples of monitoring and analyzing the infrastructure and critical components of <strong>Hyperledger Fabric</strong> using their <strong>Build Your First Network</strong> (BYFN) examples.</h2>
+          </p>
+          <p>
+            <h2>Below you are some useful links and example dashboards to get started with.  On the Dashboards keep a look out for and click on the "i" symbols for additional information about each chart. Please send us your feedback to blockchain@splunk.com.</h2>
+          </p>
+          <p>
+            <h2>In order for these dashboards to work please make sure your data sources are configured correctly by using the <strong><a href="/app/splunk-hyperledger-fabric/data_setup" target="_blank">Data Setup</a></strong> dashboard.</h2>
+          </p>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-hyperledger-fabric/network_architecture_and_channels" target="_blank">Network Architecture and Channels</a>
+          </h1>
+        </center>
+        <center>
+          <img src="https://www.splunkdlt.com/static/1ce2521db5e07f8ed577f59c3bdc3e35/d9ed5/architecture.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-hyperledger-fabric/network_monitoring" target="_blank">Infrastructure Health and Monitoring</a>
+          </h1>
+        </center>
+        <center>
+          <img src="https://www.splunkdlt.com/static/8f9710261aef067e56f85f381b34eeb7/d9ed5/monitoring.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-hyperledger-fabric/transaction_analytics" target="_blank">Transaction Analytics</a>
+          </h1>
+        </center>
+        <center>
+          <img src="https://www.splunkdlt.com/static/44df91010cf2f52586511091ceca3771/e3189/transaction_analytics.png"/>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-hyperledger-fabric/security_monitoring" target="_blank">Security Monitoring</a>
+          </h1>
+        </center>
+        <center>
+          <img src="https://www.splunkdlt.com/static/ad7c64273bd0a665ab1804d98bb76cdd/e3189/security.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-hyperledger-fabric/search?earliest=-60m%40m&amp;latest=now&amp;q=search%20index%3Dhyperledger_logs" target="_blank">Event Search</a>
+          </h1>
+        </center>
+        <center>
+          <img src="https://www.splunkdlt.com/static/41e73a6568efa88f8bf0159737859251/d9ed5/search.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/search/analysis_workspace" target="_blank">Metrics Workspace</a>
+          </h1>
+        </center>
+        <center>
+          <img src="https://www.splunkdlt.com/static/02d16cb1ca923ebedf619c90ce9d6400/e3189/metrics.png"/>
+        </center>
+      </html>
+    </panel>
+  </row>
+</dashboard>

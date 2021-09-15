@@ -1,0 +1,72 @@
+
+# Application-level permissions
+
+[]
+access = read : [ * ], write : [ admin, power ]
+
+### EVENT TYPES
+
+[eventtypes]
+export = system
+
+
+### PROPS
+
+[props]
+export = system
+
+
+### TRANSFORMS
+
+[transforms]
+export = system
+
+
+### LOOKUPS
+
+[lookups]
+export = system
+
+
+### VIEWSTATES: even normal users should be able to create shared viewstates
+
+[viewstates]
+access = read : [ * ], write : [ * ]
+export = system
+
+### INDEXES
+
+[indexes/hyperledger_metrics]
+owner = admin
+version = 7.2.1
+modtime = 1544812305.831900000
+
+[indexes/hyperledger_logs]
+owner = admin
+version = 7.2.1
+modtime = 1544813255.780531000
+
+### INPUTS
+
+[inputs/http]
+version = 7.2.1
+modtime = 1544813044.242972000
+
+[inputs/http%3A%2F%2Fsplunk_hec_token]
+access = read : [ admin ], write : [ admin ]
+export = none
+owner = nobody
+version = 7.2.1
+modtime = 1544813043.358748000
+
+[inputs/udp%3A%2F%2F8125]
+owner = admin
+version = 7.2.1
+modtime = 1544812311.058527000
+
+[inputs/http%3A%2F%2Fhyperledger_logs]
+access = read : [ admin ], write : [ admin ]
+export = none
+owner = admin
+version = 7.2.1
+modtime = 1544813285.050481000

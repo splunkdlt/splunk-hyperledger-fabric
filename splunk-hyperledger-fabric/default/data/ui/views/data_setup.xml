@@ -1,0 +1,305 @@
+<dashboard theme="dark" version="1.1">
+  <label>Data Setup</label>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <br/>
+          <p>
+            <h2>This page will help you get your data sources configured properly and validate if they are comming in correctly.  Once you have completed these steps the existing dashboards in this App should start working.  These searches can even be modified and used to further monitor your own environment! </h2> 
+            <h3>Please note the links for Macros below are made to work with the "Admin" user.  If you are using another user, you can still edit the Macros by going to Settings --&gt; Advanced Search --&gt; Macros.  </h3> 
+          </p>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 1: Hyperledger Fabric Application Logs</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <p>
+            <h2>Instructions for Gathering Application Logs</h2>
+          </p>
+       </center>
+              <ul>
+                <li>Docker: <a target="_blank" href="https://docs.docker.com/config/containers/logging/splunk/">Splunk Docker Logging Driver</a>
+          </li>
+                <li>Kubernetes: <a target="_blank" href="https://github.com/splunk/splunk-connect-for-kubernetes">Splunk Connect for Kubernetes</a>
+          </li>
+                <li>Syslog: <a target="_blank" href="https://docs.splunk.com/Documentation/Splunk/7.2.5/Data/Monitornetworkports">Monitoring Network Ports in Splunk</a>
+          </li>
+                <li>Log File: <a href="https://docs.splunk.com/Documentation/Splunk/7.2.5/Data/MonitorfilesanddirectorieswithSplunkWeb">Monitoring Files and Directories with Splunk</a>
+          </li>
+                <li>IBM Cloud Platform: <a target="_blank" href="https://www.ibm.com/blogs/bluemix/2019/02/solving-business-problems-with-splunk-on-ibm-cloud-kubernetes-service/">IBM Cloud Platform</a>
+          </li>
+                <li>Microsoft Azure: <a target="_blank" href="https://splunkbase.splunk.com/app/3110/">Splunk Add-on for Microsoft Cloud Services</a>
+          </li>
+                <li>AWS Cloudwatch: <a target="_blank" href="https://splunkbase.splunk.com/app/1274/">Splunk App for AWS</a>
+          </li>
+                <li>GCP Stackdriver: <a target="_blank" href="https://splunkbase.splunk.com/app/3088/">Splunk Add-on for Google Cloud</a>
+          </li>
+              </ul>
+              Also make sure to set the following environment variable in your Hyperledger Fabric environments:
+              <code>FABRIC_LOGGING_FORMAT=json</code>
+        <center>
+          <p>
+            <h2>Edit this <strong>
+                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_application_logs?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_application_logs" target="_blank">Macro</a>
+              </strong> with your index and sourcetype.</h2>
+          </p>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <chart>
+        <title>If configured correctly you will see data here:</title>
+        <search>
+          <query>`hlf_application_logs` 
+| timechart count as "Event Count" by sourcetype</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 2: Splunk Connect for Hyperledger Fabric</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <p>
+            <h2>Instructions for Setting Up Splunk Connect for Hyperledger Fabric</h2>
+          </p>
+       </center>
+      <p>The Splunk Connect for Hyperledger Fabric is an open source agent that connects to peer(s) on the Hyperledger Fabric network. See the <a href="https://github.com/splunk/fabric-logger">README on Github here.</a>
+        </p>
+       <center>
+          <p>
+            <h2>Edit this <strong>
+                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_ledger_logs?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_ledger_logs" target="_blank">Macro</a>
+              </strong> with your index and sourcetype.</h2>
+          </p>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <chart>
+        <title>If configured correctly you will see data here:</title>
+        <search>
+          <query>`hlf_ledger_logs` 
+| timechart count as "Event Count" by sourcetype</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="height">175</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 3: Hyperledger Fabric Metrics</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <p>
+            <h2>Instructions for Ingesting Prometheus Metrics into Splunk</h2>
+          </p>
+       </center>
+       <p>Prometheus metrics can be scraped from <a target="_blank" href="https://hyperledger-fabric.readthedocs.io/en/release-2.2/metrics_reference.html#prometheus">Hyperledger Fabric 2.2 </a>. Set the following environment variables in your Hyperledger Fabric environment:
+       </p>
+       <pre>
+  CORE_METRICS_PROVIDER: prometheus
+  CORE_OPERATIONS_LISTENADDRESS: [EXTERNAL-IP]:[PEER_PORT]
+  ORDERER_METRICS_PROVIDER: prometheus
+  ORDERER_OPERATIONS_LISTENADDRESS: [EXTERNAL-IP]:[ORDERER_PORT]</pre>
+           <p>
+          Once your Hyperledger Fabric nodes have exposed their Prometheus endpoints, the metrics need to be scraped and sent to Splunk. <a target="_blank" href="https://github.com/splunk/fabric-logger">fabric-logger</a> can be configured to scrape these metrics by setting the following environment variables.</p>
+        <pre>
+  PROMETHEUS_DISCOVERY=true
+  PROMETHEUS_PEER_PORT=[PEER_PORT]
+  PROMETHEUS_ORDERER_PORT=[ORDERER_PORT]</pre>
+             <p> Alternatively, the  <a target="_blank" href="https://github.com/splunkdlt/dlt-connect-libs/tree/master/docker/prometheus-scraper-standalone">Splunk Opentelemetry Connector</a> or <a target="_blank" href="https://github.com/splunkdlt/dlt-connect-libs/tree/master/docker/prometheus-scraper-standalone">standalone Prometheus scraper</a> can be configured to scrape these metrics from an existing Prometheus environment.</p>
+        <center>
+          <p>
+            <h2>If your Prometheus metrics' have a common prefix, set that with this<strong>
+                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics_prefix?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_prefix" target="_blank">Macro</a>
+              </strong>
+            </h2>
+            <h2>Edit this <strong>
+              <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics_index?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_index" target="_blank">Macro</a>
+            </strong> with your index.
+            </h2>
+            <h2>Edit this <strong>
+              <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics" target="_blank">Macro</a>
+            </strong> with your index and sourcetype.
+            </h2>
+            <h2>If using fabric-logger's Prometheus scraper, you will want to split metrics by "host" (default) in our example queries. If scraping from an existing Prometheus environment, you may want to update this <strong>
+                <a href="/manager/splunk-hyperledger-fabric/admin/macros/hlf_prometheus_metrics_split?action=edit&amp;ns=splunk-hyperledger-fabric&amp;f_ns=splunk-hyperledger-fabric&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-hyperledger-fabric%2Fadmin%2Fmacros%2Fhlf_prometheus_metrics_split" target="_blank">Macro</a>
+            </strong> to split by "instance" or "exported_instance".</h2>
+          </p>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <chart>
+        <title>If configured correctly you will see data here:</title>
+        <search id="metric_search">
+          <query>| mstats count WHERE `hlf_prometheus_metrics` span=10s by `hlf_prometheus_metrics_split` 
+| timechart sum(count) as metrics_count by `hlf_prometheus_metrics_split`</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 4: System Metrics (optional)</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <p>
+            <h2>Instructions for collecting System Metrics</h2>
+          </p>
+       </center>
+            <ul>
+              <li>Docker and Docker Compose: we recommend using <a target="_blank" href="https://github.com/google/cadvisor">cadvisor</a> to collect system metrics from Docker.</li>
+              <li>Kubernetes: <a target="_blank" href="https://github.com/splunk/splunk-connect-for-kubernetes">Splunk Connect for Kubernetes</a>
+          </li>
+              <li>Collectd: <a target="_blank" href="https://docs.splunk.com/Documentation/Infrastructure/1.2.3/Admin/ManageAgents">Installing CollectD for Splunk</a>
+          </li>
+              <li>IBM Cloud Platform: <a target="_blank" href="https://www.ibm.com/blogs/bluemix/2019/02/solving-business-problems-with-splunk-on-ibm-cloud-kubernetes-service/">IBM Cloud Platform</a>
+          </li>
+              <li>Microsoft Azure: <a target="_blank" href="https://splunkbase.splunk.com/app/3110/">Splunk Add-on for Microsoft Cloud Services</a>
+          </li>
+              <li>AWS Cloudwatch: <a target="_blank" href="https://www.splunk.com/blog/2018/10/30/working-with-aws-cloudwatch-metrics.html">Metrics with Splunk and AWS</a>
+          </li>
+              <li>GCP Stackdriver: <a target="_blank" href="https://splunkbase.splunk.com/app/3088/">Splunk Add-on for Google Cloud</a>
+          </li>
+            </ul>
+      <center>
+          <p>
+            <h2>Edit this <strong>
+                <a href="/manager/splunk-hyperledger-fabric/admin/macros/" target="_blank">Macros</a>
+              </strong> with your index and sourcetype.</h2>
+          </p>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <chart>
+        <title>If configured correctly you will see data here:</title>
+        <search>
+          <query>| mstats count WHERE (`cadvisor_metrics`) OR (`k8s_metrics_index`) span=10s
+| timechart sum(count) as system_metrics_count</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 5: Configure Tags</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+          <p>
+            This step is required to make the network architecture and channels dashboard work.  It will also make your searches and dashboarding easier by "tagging" your fabric nodes such as the orderers, anchor peers, leader peers and more. Note your environment may vary and might not need to utilize all of the tags.  For example you may use something other than couchdb or kafka. You may need to edit the search on the right if you are a user other than admin and are tagging a different field other than container_id.</p>
+          <p>Use this as a reference: <code>| rest /servicesNS/&lt;user&gt;/&lt;app&gt;/search/fields/&lt;field-name&gt;/tags</code>
+        </p>
+        <center>
+          <p>
+            <h2>Edit your <strong>
+                <a href="/manager/splunk-hyperledger-fabric/saved/ntags" target="_blank">Tags</a>
+              </strong> here.</h2>
+          </p>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <table>
+        <search>
+          <query>| rest /servicesNS/admin/splunk-hyperledger-fabric/search/fields/container_id/tags
+| fields title id | rename title as tag</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

@@ -1,0 +1,42 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_release:
+    name: build_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: version
+        run: echo "::set-output name=version::$(cat splunk-hyperledger-fabric/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
+        id: version
+      - name: copy readme
+        run: cp README.md splunk-hyperledger-fabric/README.md
+      - name: package
+        run: tar -cvzf splunk-hyperledger-fabric.tgz splunk-hyperledger-fabric
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: Splunk App for Hyperledger Fabric v${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./splunk-hyperledger-fabric.tgz
+          asset_name: splunk-hyperledger-fabric-v${{ steps.version.outputs.version }}.tgz
+          asset_content_type: application/gzip

@@ -1,0 +1,736 @@
+<form theme="dark" script="infobutton.js" stylesheet="infobutton.css" version="1.1">
+  <label>Infrastructure Health and Monitoring</label>
+  <fieldset submitButton="false">
+    <input type="time" token="field1" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="refresh_token" searchWhenChanged="true">
+      <label>Refresh Interval</label>
+      <choice value="5s">5 Seconds</choice>
+      <choice value="10s">10 Seconds</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1 Minute</choice>
+      <choice value="24h">None</choice>
+      <fieldForLabel>refresh_token</fieldForLabel>
+      <fieldForValue>refresh_token</fieldForValue>
+      <default>30s</default>
+      <initialValue>30s</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>System Metrics (cAdvisor)</h1>
+          <h3>If you are using Kubernetes you can use this <a href="/app/splunk-hyperledger-fabric/k8s_monitoring" target="_blank">dashboard.</a>
+          </h3> 
+        </center>
+        </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>CPU Usage - System</title>
+      <chart>
+        <search type="annotation">
+          <query>
+                  | mstats avg(_value) as avg WHERE metric_name="cadvisor.*.cpu_cumulative_usage" AND "index"="hyperledger_metrics" span=10s by metric_name 
+| sort - metric_name _time 
+| streamstats stdev(avg) as dif window=2 by metric_name 
+| search metric_name="cadvisor.zoo*" OR metric_name="cadvisor.kafka*" OR metric_name="cadvisor.couch*" OR metric_name="cadvisor.peer*" OR metric_name="cadvisor.cli*" OR metric_name="cadvisor.orderer*" 
+| timechart partial=f limit=15 latest(dif) as total span=20s by metric_name 
+| sort - _time | addtotals 
+| eval Total=round(Total) 
+| eval highCPU=if(Total&gt;30000000000,"highCPU_Alert","") 
+| search highCPU="highCPU_Alert" | eval annotation_label = highCPU | eval annotation_category = "highCPU" | table _time annotation_label annotation_category
+              </query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <search>
+          <query>| mstats avg(_value) as avg WHERE metric_name="cadvisor.*.cpu_cumulative_usage" AND `system_metrics` span=10s by metric_name 
+| sort - metric_name _time 
+| streamstats stdev(avg) as dif window=2 by metric_name 
+| search metric_name="cadvisor.zoo*" OR metric_name="cadvisor.kafka*" OR metric_name="cadvisor.couch*" OR metric_name="cadvisor.peer*" OR metric_name="cadvisor.cli*" OR metric_name="cadvisor.orderer*"
+| timechart partial=f limit=15 latest(dif) span=10s by metric_name</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.annotation.categoryColors">{"highCPU":"0xff3300","containerDOWN":"0xff0000"}</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.overlayFields">threshold</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">seriesCompare</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">175</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Memory Usage</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE (metric_name="cadvisor.*com.memory_usage" OR metric_name="cadvisor.couch*.memory_usage") AND `system_metrics` span=10s by metric_name 
+| timechart limit=15 avg(_value) as "Avg" span=10s by metric_name 
+| fields _time cadvisor.peer* cadvisor.couch* cadvisor.cli* cadvisor.kafka* cadvisor.zoo* cadvisor.order*</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">seriesCompare</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">175</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>Hyperledger Fabric Metrics</h1>
+        </center>
+        </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Max Blockchain Height between all Nodes</title>
+      <chart>
+        <search>
+          <query>| mstats max(_value) prestats=true WHERE (`hlf_prometheus_metrics` AND metric_name="*ledger.blockchain.height" OR metric_name="*ledger_blockchain_height")
+span=10s
+| timechart max(_value) as "Max" span=10s</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">150</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>RAFT Data Persist Duration</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE (`hlf_prometheus_metrics` AND metric_name="*consensus.etcdraft.data.persist.duration.sum" OR metric_name="*consensus_etcdraft_data_persist_duration_sum")  span=10s
+| timechart avg(_value) as "Avg" span=10s</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">150</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Allocated Memory (bytes)</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE (`hlf_prometheus_metrics` AND metric_name="*go.memstats.alloc.bytes" OR metric_name="*go_memstats_alloc_bytes") span=10s BY `hlf_prometheus_metrics_split` 
+| timechart avg(_value) as "Avg" agg=max limit=10 useother=false span=30s BY `hlf_prometheus_metrics_split`</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">150</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>HLF Transaction and Node Performance</h1>
+        </center>
+        </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="performance">
+      <title>Transaction Latency and Block Performance (Drilldown)</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) kvledger 
+| timechart avg(block_latency_ms) AS avg_latency_ms 
+| eval avg_latency_ms=if(isnull(avg_latency_ms),0,avg_latency_ms)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">150</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xf1813f","0xdc4e41","0xdc4e41"]</option>
+        <option name="rangeValues">[200,300,500,1000]</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="unit">ms</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <set token="show_performance">true</set>
+        </drilldown>
+      </single>
+      <html>
+        <div class="infobutton" parent="performance" type="collapse">
+          <p>Latency is a key indicator of successful transaction performance. This chart shows overall latency across all peers and channels.  To dive deeper into each peer or channel - simply click anywhere on the graph.  You can edit these drilldowns to do other operations as well.</p>
+        </div>
+        </html>
+    </panel>
+    <panel id="txn">
+      <title>TxnPerSecond (Click to go to Txn Analytics Dash)</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) sourcetype="fabric_logger:endorser_transaction" status=200 OR status="VALID"
+| stats dc(transactionId) as Count
+| eval txnPerSec=Count/60 
+| fields txnPerSec</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>3s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">150</option>
+        <option name="numberPrecision">0.000</option>
+        <option name="rangeColors">["0x555","0x53a051","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,10,50,100]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">Over 1 minute time window</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">/app/splunk-hyperledger-fabric/transaction_analytics</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="errors">
+      <title>Error Rate (Drilldown)</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) "line.level"=error OR (tag=kafka_cluster AND (err* OR fail*)) OR (tag=zookeeper AND err* OR fail*) OR (tag=*peers AND err* OR fail*) OR (tag=couchdb AND err* OR fail*)
+| timechart partial=f count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">150</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,5]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <set token="show_error">true</set>
+        </drilldown>
+      </single>
+      <html>
+        <div class="infobutton" parent="errors" type="collapse">
+          <p>Errors in logs can be extremely useful for finding the root cause of an issue. Having all of these logs in one place provides a simple and fast way to troubleshoot.  Click the value to drilldown into which hyperledger fabric node(s) is generating errors. </p>
+        </div>
+        </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_performance$">
+      <title>Block Performance by Peer</title>
+      <table>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) kvledger 
+| eventstats max(block_number) as overall_block 
+| stats avg(block_latency_ms) AS avg_latency_ms sparkline(avg(block_latency_ms)) AS latency_trend, latest(block_number) AS latestCommittedBlock, latest(overall_block) as block_height by container_id 
+| eval blocks_behind=block_height-latestCommittedBlock 
+| rename container_id as Peer | eval avg_latency_ms=round(avg_latency_ms,2)
+| table Peer avg_latency_ms latency_trend</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="avg_latency_ms">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" midColor="#EC9960" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax" midValue="200"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_performance$">
+      <title>Block Performance by Channel</title>
+      <table>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) kvledger 
+| eventstats max(block_number) as overall_block by channel 
+| stats latest(block_number) AS latestCommittedBlock latest(overall_block) as block_height latest(transactions_per_block) AS last_transaction_per_block avg(transactions_per_block) AS avg_transaction_per_block latest(block_latency_ms) AS last_latency_ms avg(block_latency_ms) AS avg_latency_ms sparkline(avg(block_latency_ms)) AS latency_trend by channel 
+| eval blocks_behind=block_height-latestCommittedBlock 
+| eval avg_transaction_per_block=round(avg_transaction_per_block,1) 
+| eval avg_latency_ms=round(avg_latency_ms,2) 
+| rename channel as Channel 
+| table Channel latestCommittedBlock block_height blocks_behind last_transaction_per_block avg_transaction_per_block last_latency_ms avg_latency_ms latency_trend</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="avg_latency_ms">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" midColor="#EC9960" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax" midValue="200"></scale>
+        </format>
+        <format type="color" field="last_latency_ms">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" midColor="#EC9960" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax" midValue="200"></scale>
+        </format>
+        <format type="color" field="blocks_behind">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <drilldown>
+          <set token="channel_token">$click.value$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$channel_token$">
+      <title>Block Status By Peer for Channel: $channel_token$</title>
+      <table>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) kvledger channel=$channel_token$ 
+| eventstats max(block_number) as overall_block 
+| stats latest(block_number) AS latestCommittedBlock latest(overall_block) as block_height latest(transactions_per_block) AS last_transaction_per_block avg(transactions_per_block) AS avg_transaction_per_block latest(block_latency_ms) AS last_latency_ms avg(block_latency_ms) AS avg_latency_ms sparkline(avg(block_latency_ms)) AS latency_trend by container_id 
+| eval blocks_behind=block_height-latestCommittedBlock 
+| eval avg_transaction_per_block=round(avg_transaction_per_block,1) 
+| eval avg_latency_ms=round(avg_latency_ms,2) 
+| rename container_id as Container 
+| table Container latestCommittedBlock block_height blocks_behind avg_transaction_per_block avg_latency_ms avg_latency_trend</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="latency_ms">
+          <colorPalette type="minMidMax" maxColor="#AF575A" midColor="#F1813F" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax" midValue="75" minValue="40"></scale>
+        </format>
+        <format type="number" field="blocks_behind"></format>
+        <format type="color" field="blocks_behind">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format type="color" field="avg_latency_ms">
+          <colorPalette type="minMidMax" maxColor="#AF575A" midColor="#EC9960" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax" midValue="200"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$channel_token$">
+      <title>Block Processing Time for Channel: $channel_token$</title>
+      <chart>
+        <search>
+          <query>| mstats rate(`hlf_prometheus_metrics_prefix`ledger.block.processing.time.sum) as `hlf_prometheus_metrics_prefix`sum_duration_dot, rate(`hlf_prometheus_metrics_prefix`ledger_block_processing_time_sum) as `hlf_prometheus_metrics_prefix`sum_duration_underscore, rate(`hlf_prometheus_metrics_prefix`ledger.block.processing.time.count) as `hlf_prometheus_metrics_prefix`count_dot, rate(`hlf_prometheus_metrics_prefix`ledger_block_processing_time_count) as `hlf_prometheus_metrics_prefix`count_underscore
+    where index=`hlf_prometheus_metrics_index` AND channel=$channel_token$ by `hlf_prometheus_metrics_split` span=1m 
+| addtotals fieldname=sum_duration `hlf_prometheus_metrics_prefix`sum_duration_*
+| addtotals fieldname=count `hlf_prometheus_metrics_prefix`count_*
+| eval avg_duration=sum_duration/count
+| timechart avg(avg_duration) by `hlf_prometheus_metrics_split`</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">217</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$channel_token$">
+      <title>Blockchain Height by Peer for Channel: $channel_token$</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE (`hlf_prometheus_metrics` AND channel=$channel_token$) AND (metric_name="*ledger.blockchain.height" OR metric_name="*ledger_blockchain_height") by `hlf_prometheus_metrics_split` span=10s 
+| timechart avg(_value) as "Avg" span=10s by `hlf_prometheus_metrics_split`</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="height">194</option>
+        <option name="refresh.display">none</option>
+      </chart>
+    </panel>
+    <panel depends="$channel_token$" id="world_state">
+      <title>World State (dbstate) Commit Time for Channel: $channel_token$</title>
+      <chart>
+        <search>
+          <query>| mstats rate(`hlf_prometheus_metrics_prefix`ledger.statedb.commit.time.sum) as `hlf_prometheus_metrics_prefix`sum_duration_dot, rate(`hlf_prometheus_metrics_prefix`ledger_statedb_commit_time_sum) as `hlf_prometheus_metrics_prefix`sum_duration_underscore, rate(`hlf_prometheus_metrics_prefix`ledger.statedb.commit.time.count) as `hlf_prometheus_metrics_prefix`count_dot, rate(`hlf_prometheus_metrics_prefix`ledger_statedb_commit_time_count) as `hlf_prometheus_metrics_prefix`count_underscore
+    where index=`hlf_prometheus_metrics_index` AND channel=$channel_token$ by `hlf_prometheus_metrics_split` span=1m 
+| addtotals fieldname=sum_duration `hlf_prometheus_metrics_prefix`sum_duration_*
+| addtotals fieldname=count `hlf_prometheus_metrics_prefix`count_*
+| eval avg_duration=sum_duration/count
+| timechart avg(avg_duration) by `hlf_prometheus_metrics_split`</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">206</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+      <html>
+        <div class="infobutton" parent="world_state" type="modal">
+          <p>A blockchain ledger consists of two distinct, though related, parts – a world state and a blockchain.</p>
+          <center>
+            <img src="/static/app/HyperLedger-Splunk/world_state.png"/>
+          </center>
+          <p>Firstly, there’s a world state – a database that holds the current values of a set of ledger states. The world state makes it easy for a program to get the current value of these states, rather than having to calculate them by traversing the entire transaction log. Ledger states are, by default, expressed as key-value pairs, though we’ll see later that Hyperledger Fabric provides flexibility in this regard. The world state can change frequently, as states can be created, updated and deleted.
+          </p>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_error$">
+      <title>Error Count</title>
+      <chart>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) "line.level"=error OR (tag=kafka_cluster AND (err* OR fail*)) OR (tag=zookeeper AND err* OR fail*) OR (tag=*peers AND err* OR fail*) OR (tag=couchdb AND err* OR fail*)
+| timechart count by container_id</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">173</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_error$">
+      <title>Errors</title>
+      <table>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) "line.level"=error OR (tag=kafka_cluster AND (err* OR fail*)) OR (tag=zookeeper AND err* OR fail*) OR (tag=*peers AND err* OR fail*) OR (tag=couchdb AND err* OR fail*) 
+| eval Msg=coalesce('line.msg',line) 
+| table _time container_id Msg 
+| dedup Msg 
+| sort - _time</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="container_id">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,519 @@
+<form theme="dark" script="infobutton.js" stylesheet="infobutton.css" version="1.1" >
+  <label>Security Monitoring</label>
+  <fieldset submitButton="false">
+    <input type="time" token="field1" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="refresh_token" searchWhenChanged="true">
+      <label>Refresh Interval</label>
+      <choice value="5s">5 Seconds</choice>
+      <choice value="10s">10 Seconds</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1 Minute</choice>
+      <choice value="24h">None</choice>
+      <fieldForLabel>refresh_token</fieldForLabel>
+      <fieldForValue>refresh_token</fieldForValue>
+      <default>30s</default>
+      <initialValue>30s</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel id="dos_header">
+      <html>
+        <div>
+        <center>
+          <h1>Denial of Service Indicators</h1>
+        </center>
+        </div>
+      </html>
+      <html>
+        <div class="infobutton" parent="dos_header" type="collapse">
+          <p>Increases in unique transaction senders, incoming connections, and transaction latency, as well as decreases in transaction throughput may indicate infrastructure failures, configuration errors, or Denial of Service attacks. </p>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="latency">
+      <title>Transaction Latency  (Click to go to Infrastructure Dash)</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) kvledger 
+| timechart avg(block_latency_ms) AS avg_latency_ms 
+| eval avg_latency_ms=if(isnull(avg_latency_ms),0,avg_latency_ms)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">150</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xf1813f","0xdc4e41","0xdc4e41"]</option>
+        <option name="rangeValues">[200,300,500,1000]</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="unit">ms</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/splunk-hyperledger-fabric/network_monitoring</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="txn">
+      <title>TxnPerSecond (Click to go to Txn Analytics Dash)</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) sourcetype="fabric_logger:endorser_transaction" status=200 OR status="VALID"
+| stats dc(transactionId) as Count
+| eval txnPerSec=Count/60 
+| fields txnPerSec</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>3s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">150</option>
+        <option name="numberPrecision">0.000</option>
+        <option name="rangeColors">["0x555","0x53a051","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,10,50,100]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">Over 1 minute time window</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">/app/splunk-hyperledger-fabric/transaction_analytics</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="unique_senders">
+      <title>Unique Transaction Senders</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) sourcetype="fabric_logger:endorser_transaction" isValid=true
+| stats dc("transactionData.actions{}.header.creator.id_bytes_string")</query>
+          <earliest>-30m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="height">150</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[5,20]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Transaction Count Over Time</title>
+      <chart>
+        <search>
+          <query>| mstats latest(_value) as num_txs where `hlf_prometheus_metrics` AND (metric_name=*ledger_transaction_count OR metric_name=*ledger.transaction.count) by `hlf_prometheus_metrics_split`, channel span=auto 
+| stats sum(num_txs) as sum_txs_by_host by _time `hlf_prometheus_metrics_split` 
+| timechart avg(sum_txs_by_host) by `hlf_prometheus_metrics_split`</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Net gRPC Connections Open by Node</title>
+      <chart>
+        <search>
+          <query>| mstats latest(_value) as count WHERE `hlf_prometheus_metrics` AND (metric_name="*grpc.comm.conn.opened" OR metric_name="*grpc.comm.conn.closed") OR (metric_name="*grpc_comm_conn_opened" OR metric_name="*grpc_comm_conn_closed")
+    by metric_name `hlf_prometheus_metrics_split` span=10s 
+| rex field=metric_name "(.*)grpc.comm.conn.(?&lt;type&gt;opened|closed)$" 
+| eval opened_count = if(type == "opened", count, null()) 
+| eval closed_count = if(type == "closed", count, null()) 
+| stats latest(opened_count) as opened_count latest(closed_count) as closed_count by _time, `hlf_prometheus_metrics_split` 
+| eval delta = opened_count - coalesce(closed_count, 0) 
+| timechart usenull=f useother=f cont=f first(delta) by `hlf_prometheus_metrics_split`</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">seriesCompare</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Orderer TLS Connections to Other Nodes</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE `hlf_prometheus_metrics` AND (metric_name="*cluster.comm.egress.tls.connection.count" OR metric_name="*cluster_comm_egress_tls_connection_count") span=10s by `hlf_prometheus_metrics_split` 
+| timechart avg(_value) as "Avg" agg=max limit=15 useother=false span=10s BY `hlf_prometheus_metrics_split`</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">undefined</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">seriesCompare</option>
+        <option name="displayview">analysis_workspace</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel id="consensus_header">
+      <html>
+        <div>
+        <center>
+          <h1>Blockchain Integrity &amp; Consensus Manipulation Attack Indicators</h1>
+        </center>
+        </div>
+        </html>
+      <html>
+        <div class="infobutton" parent="consensus_header" type="collapse">
+          <p>Orphaned blocks occur when some of the network decides on a new block for a previously accepted block. Occurences should be investigated as they may indicate blockchain integrity attacks.</p>
+          <p>Leadership elections and chain configuration may indicate a consensus configuration manipulation attack.</p>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="orphaned_blocks">
+      <title>Orphaned Blocks (Drilldown)</title>
+      <single>
+        <search>
+          <query>sourcetype="fabric_logger:block_integrity"
+| stats dc(block_hash) as distinct_hashes by channel, block_number
+| where distinct_hashes &gt; 1
+| stats count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">150</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <set token="show_orphans">true</set>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="config_updates">
+      <title>Config Updates</title>
+      <single>
+        <search>
+          <query>(`hlf_application_logs`) OR (`hlf_ledger_logs`) sourcetype="fabric_logger:config"
+| stats dc(signature_hex) as Count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="height">150</option>
+        <option name="numberPrecision">0.000</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,10]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">Over 15 minute time window</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel id="leaders">
+      <title>Consensus Leader Changes</title>
+      <single>
+        <search>
+          <query>| mstats latest(_value) AS curr_count WHERE (`hlf_prometheus_metrics`) AND (metric_name="*consensus.etcdraft.leader.changes" OR metric_name="*consensus_etcdraft_leader_changes") by `hlf_prometheus_metrics_split`, channel
+span=1s 
+| streamstats current=f latest(curr_count) AS prev_count by `hlf_prometheus_metrics_split`,channel 
+| eval delta_count=curr_count-prev_count
+| where delta_count&gt;=0 
+| stats sum(delta_count) as total_delta_per_host_channel by `hlf_prometheus_metrics_split`, channel
+| stats max(total_delta_per_host_channel) as max_delta_per_channel by channel
+| stats sum(max_delta_per_channel) as max_total
+| rename max_total as count
+| appendpipe [stats count | where count=0]</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="height">150</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,5]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">Over 15 minute time window</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$show_orphans$">
+      <title>Observed Orphaned Blocks</title>
+      <table>
+        <search>
+          <query>sourcetype="fabric_logger:block_integrity"
+| stats dc(block_hash) as distinct_hashes by channel, block_number
+| where distinct_hashes &gt; 1
+| rename channel as Channel, block_number as "Block Number", distinct_hashes as "Distinct Hashes"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Consensus Leader Changes</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE `hlf_prometheus_metrics` AND (metric_name="*consensus.etcdraft.leader.changes" OR metric_name="*consensus_etcdraft_leader_changes") span=10s by `hlf_prometheus_metrics_split`,channel 
+| timechart avg(_value) as "Avg" agg=max partial=f limit=15 useother=false span=10s BY "channel"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Config Update Transactions per Channel</title>
+      <chart>
+        <search>
+          <query>(index=hyperledger_logs sourcetype=docker:*) OR (index=hyperledger_logs (sourcetype="fabric_logger:*"))  sourcetype="fabric_logger:config" | reverse
+| dedup "signature_hex" | timechart count as uname span=15m  by "payload.header.channel_header.channel_id"
+| rename uname as "Config Transactions per 15m"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+</form>
