@@ -1,3 +1,5 @@
+## Note: This repo is being archived in favor of the same repo under the Splunk Github account from which it was forked. Changes have been commited and merged into that repo.
+
 # Splunk App for Hyperledger Fabric
 
 The Splunk App for Hyperledger Fabric contains a set of dashboards and analytics to give you full visibility into the system metrics, application data and ledger so that you can maintain security, stability and performance for your Hyperledger Fabric deployment.  
